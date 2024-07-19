@@ -1,4 +1,43 @@
----
+--import matplotlib.pyplot as plt
+import numpy as np
+
+# Định nghĩa kích thước hình ảnh
+width, height = 1920, 640
+image = np.zeros((height, width, 3), dtype=np.uint8)
+
+# Tạo hình ảnh vảy rồng chi tiết
+def draw_detailed_dragon_scales(image):
+    scale_height = 40
+    scale_width = 80
+    for y in range(0, height, scale_height):
+        for x in range(0, width, scale_width):
+            # Offset every other row to create a staggered pattern
+            x_offset = scale_width // 2 if (y // scale_height) % 2 == 0 else 0
+            # Create scales as semi-circles with gradient
+            for i in range(scale_height):
+                for j in range(scale_width):
+                    if ((j - scale_width // 2) ** 2 + (i - scale_height) ** 2) <= (scale_height // 2) ** 2:
+                        # Calculate gradient color
+                        gradient = 1 - (i / scale_height)
+                        base_color = np.array([30, 144, 255])  # Dodger blue
+                        highlight_color = np.array([173, 216, 230])  # Light blue
+                        color = (1 - gradient) * base_color + gradient * highlight_color
+                        image[y + i, (x + j + x_offset) % width, :] = color
+    return image
+
+# Tạo hình ảnh trống
+image = np.zeros((height, width, 3), dtype=np.uint8)
+
+# Vẽ vảy rồng chi tiết
+image = draw_detailed_dragon_scales(image)
+
+# Vẽ và lưu hình ảnh
+plt.figure(figsize=(19.2, 6.4))
+plt.imshow(image)
+plt.axis('off')
+plt.savefig('detailed_dragon_scales.png')
+plt.show()
+
 jupytext:
   text_representation:
     extension: .md
